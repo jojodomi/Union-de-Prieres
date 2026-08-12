@@ -325,7 +325,7 @@
     </div>
 
     <script>
-      // 🔴 REMPLACEZ CETTE URL PAR VOTRE LIEN DE SCRIPT APPS SCRIPT
+    // 🔴 REMPLACEZ CETTE URL PAR VOTRE LIEN DE SCRIPT APPS SCRIPT
 const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyGp86E5cffCEdVXujVD0ghDazNKlh0xJydbY_IBSCHKQ3DqrSYiytgjMCnXn_IeQNT/exec";
 
 const form = document.getElementById('priereForm');
@@ -352,26 +352,22 @@ form.addEventListener('submit', async (e) => {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
 
     try {
-        // Créer un formulaire invisible pour envoyer les données
-        const formData = new FormData();
+        // ✅ Utiliser URLSearchParams (comme dans votre code qui fonctionne)
+        const formData = new URLSearchParams();
         formData.append('nom', nom);
         formData.append('telephone', telephone || "Non renseigné");
         formData.append('intention', intention);
         formData.append('date', new Date().toISOString());
 
-        // Envoyer avec fetch (sans mode: 'no-cors' pour que le navigateur envoie tout)
-        const response = await fetch(WEBHOOK_URL, {
+        await fetch(WEBHOOK_URL, {
             method: 'POST',
-            body: formData  // Pas de Content-Type : le navigateur le gère
+            mode: 'no-cors',
+            body: formData  // Pas de Content-Type : le navigateur le gère automatiquement
         });
-
-        // Comme on est en POST normal, on peut lire la réponse (optionnel)
-        const result = await response.json();
-        console.log("Réponse du serveur :", result);
 
         showMessage("🙏 Votre intention a été déposée. Que le Seigneur nous exauce !", "success");
         form.reset();
-
+        
     } catch(error) {
         console.error("Erreur:", error);
         showMessage("❌ Une erreur s'est produite. Veuillez réessayer.", "error");
