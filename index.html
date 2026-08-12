@@ -22,7 +22,6 @@
             padding: 20px;
             position: relative;
         }
-        /* Effet de fond lumineux */
         body::before {
             content: '';
             position: fixed;
@@ -147,6 +146,16 @@
             color: rgba(255, 255, 255, 0.3);
             margin-top: 4px;
         }
+        /* Indicateur facultatif discret */
+        .optional-badge {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 8px;
+            border-radius: 40px;
+            margin-left: 6px;
+            font-weight: 300;
+        }
         .btn-submit {
             width: 100%;
             background: linear-gradient(135deg, #f5d371, #e8b84b);
@@ -176,26 +185,46 @@
             transform: translateY(-2px);
             box-shadow: 0 12px 30px rgba(245, 211, 113, 0.3);
         }
+
+        /* ========== MESSAGE DE CONFIRMATION GRAND ET ANIMÉ ========== */
         .message-box {
-            margin-top: 18px;
-            padding: 14px 18px;
-            border-radius: 16px;
-            display: none;
-            font-weight: 500;
-            font-size: 0.9rem;
+            margin: 20px 0 0;
+            padding: 18px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1.8rem;
+            text-align: center;
+            line-height: 1.4;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-60px) scale(0.8);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        .message-box.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
         }
         .message-box.success {
-            display: block;
-            background: rgba(46, 125, 50, 0.2);
-            color: #a5d6a7;
-            border: 1px solid rgba(46, 125, 50, 0.3);
+            background: linear-gradient(135deg, #f5d371, #e8b84b);
+            color: #1a1a2e;
+            border: 2px solid #f5d371;
         }
         .message-box.error {
-            display: block;
-            background: rgba(198, 40, 40, 0.2);
+            background: rgba(198, 40, 40, 0.3);
             color: #ef9a9a;
             border: 1px solid rgba(198, 40, 40, 0.3);
         }
+        /* Animation de sortie (fondu vers le bas) */
+        .message-box.hide {
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+            transition: all 0.6s ease-in;
+        }
+
         .footer {
             text-align: center;
             margin-top: 28px;
@@ -242,6 +271,7 @@
         @media (max-width: 480px) {
             .container { padding: 24px 16px 32px; }
             .header h1 { font-size: 1.8rem; }
+            .message-box { font-size: 1.4rem; padding: 14px 16px; }
         }
     </style>
 </head>
@@ -250,35 +280,31 @@
         <div class="header">
             <span class="icon">🙏</span>
             <h1>Intentions de prière</h1>
-            <div class="subtitle">Partagez votre prière</div>
+            <div class="subtitle">Partagez votre intention de prière</div>
             <div class="separator"></div>
             <div class="badge"><i class="fas fa-heart" style="margin-right: 4px;"></i> Communauté de prière</div>
         </div>
 
         <div class="intro-text">
-            <i class="fas fa-feather-alt"></i> Déposez ici vos intentions de prières. Ensemble, nous resterons en union de prières. 
-            Chaque prière est une lumière qui éclaire nos cœurs.
+            <i class="fas fa-feather-alt"></i> Déposez ici votre intention de prière. Ensemble nous resterons en union de prière. 
+            Que le Seigneur nous fasse miséricorde et nous exauce.
         </div>
 
-        <div class="intention-example">
-            <i class="fas fa-lightbulb"></i> <strong>Exemple :</strong> 
-            "Seigneur, je te confie cette personne qui souffre. Donne-lui la paix et la force de traverser cette épreuve. Amen."
-        </div>
 
         <form id="priereForm">
             <div class="form-group">
-                <label><i class="fas fa-user"></i> Votre prénom ou pseudo</label>
-                <input type="text" id="nom" placeholder="Ex: Marie, Paul, Un ami..." required>
+                <label><i class="fas fa-user"></i> Votre prénom ou pseudo <span class="optional-badge">facultatif</span></label>
+                <input type="text" id="nom" placeholder="Ex: Marie, Paul, Un ami...">
             </div>
 
             <div class="form-group">
-                <label><i class="fas fa-envelope"></i> Votre email (optionnel)</label>
+                <label><i class="fas fa-envelope"></i> Votre email <span class="optional-badge">facultatif</span></label>
                 <input type="email" id="email" placeholder="Ex: marie@email.com">
                 <div class="hint">Pour recevoir une réponse ou un remerciement</div>
             </div>
 
             <div class="form-group">
-                <label><i class="fas fa-pray"></i> Votre intention de prière</label>
+                <label><i class="fas fa-pray"></i> Votre intention de prière <span style="color:#f5d371;">*</span></label>
                 <textarea id="intention" placeholder="Écrivez ici votre prière, votre intention ou votre message..." required></textarea>
             </div>
 
@@ -296,24 +322,29 @@
     </div>
 
     <script>
-        // 🔴 REMPLACEZ PAR L'URL DE VOTRE SCRIPT APPS SCRIPT (uniquement pour les intentions)
+        // 🔴 REMPLACEZ CETTE URL PAR VOTRE LIEN DE SCRIPT APPS SCRIPT
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyGp86E5cffCEdVXujVD0ghDazNKlh0xJydbY_IBSCHKQ3DqrSYiytgjMCnXn_IeQNT/exec";
 
         const form = document.getElementById('priereForm');
         const messageBox = document.getElementById('messageBox');
         const submitBtn = document.getElementById('submitBtn');
+        let hideTimeout = null;
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const nom = document.getElementById('nom').value.trim();
-            const email = document.getElementById('email').value.trim();
+            // Seule l'intention est obligatoire
             const intention = document.getElementById('intention').value.trim();
-
-            if (!nom || !intention) {
-                showMessage("Veuillez indiquer votre nom et votre intention de prière.", "error");
+            if (!intention) {
+                showMessage("❌ Veuillez écrire votre intention de prière.", "error");
                 return;
             }
+
+            // Le nom est optionnel : s'il est vide, on met "Anonyme"
+            let nom = document.getElementById('nom').value.trim();
+            if (!nom) nom = "Anonyme";
+
+            const email = document.getElementById('email').value.trim();
 
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
@@ -332,7 +363,7 @@
                     })
                 });
 
-                showMessage("🙏 Votre intention a été déposée. Merci pour votre prière !", "success");
+                showMessage("🙏 Votre intention a été déposée. Que le Seigneur nous exauce !", "success");
                 form.reset();
                 
             } catch(error) {
@@ -340,17 +371,26 @@
                 showMessage("❌ Une erreur s'est produite. Veuillez réessayer.", "error");
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer ma prière';
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer mon intention';
             }
         });
 
         function showMessage(msg, type) {
+            if (hideTimeout) clearTimeout(hideTimeout);
+            
+            messageBox.className = 'message-box';
+            void messageBox.offsetWidth; // reflow
+            
             messageBox.textContent = msg;
-            messageBox.className = 'message-box ' + type;
-            messageBox.style.display = 'block';
-            clearTimeout(window.messageTimeout);
-            window.messageTimeout = setTimeout(() => {
-                messageBox.style.display = 'none';
+            messageBox.classList.add(type);
+            messageBox.classList.add('show');
+            
+            hideTimeout = setTimeout(() => {
+                messageBox.classList.remove('show');
+                messageBox.classList.add('hide');
+                setTimeout(() => {
+                    messageBox.className = 'message-box';
+                }, 600);
             }, 8000);
         }
     </script>
