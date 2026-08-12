@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>🙏 Intentions de prière</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            position: relative;
+        }
+        /* Effet de fond lumineux */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+            animation: glow 8s ease-in-out infinite alternate;
+            z-index: 0;
+        }
+        @keyframes glow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(10%, 10%) scale(1.2); }
+        }
+        .container {
+            max-width: 520px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 36px 28px 40px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.8s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 8px;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #f5d371;
+            letter-spacing: 2px;
+        }
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 4px;
+            font-weight: 300;
+            letter-spacing: 4px;
+        }
+        .header .separator {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #f5d371, transparent);
+            margin: 12px auto 0;
+        }
+        .intro-text {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            padding: 0 8px;
+        }
+        .intro-text i {
+            color: #f5d371;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+        .form-group label i {
+            color: #f5d371;
+            margin-right: 6px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #f5d371;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(245, 211, 113, 0.1);
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .form-group .hint {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 4px;
+        }
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #f5d371, #e8b84b);
+            border: none;
+            padding: 16px;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        .btn-submit:active {
+            transform: scale(0.97);
+        }
+        .btn-submit i {
+            font-size: 1.1rem;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(245, 211, 113, 0.3);
+        }
+        .message-box {
+            margin-top: 18px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            display: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .message-box.success {
+            display: block;
+            background: rgba(46, 125, 50, 0.2);
+            color: #a5d6a7;
+            border: 1px solid rgba(46, 125, 50, 0.3);
+        }
+        .message-box.error {
+            display: block;
+            background: rgba(198, 40, 40, 0.2);
+            color: #ef9a9a;
+            border: 1px solid rgba(198, 40, 40, 0.3);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.25);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+        }
+        .footer .hearts {
+            color: #f5d371;
+            letter-spacing: 4px;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(245, 211, 113, 0.15);
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            color: #f5d371;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+        .intention-example {
+            background: rgba(245, 211, 113, 0.08);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            border-left: 3px solid #f5d371;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        .intention-example i {
+            color: #f5d371;
+            margin-right: 6px;
+            font-style: normal;
+        }
+        .intention-example strong {
+            color: rgba(255, 255, 255, 0.8);
+            font-style: normal;
+        }
+        @media (max-width: 480px) {
+            .container { padding: 24px 16px 32px; }
+            .header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="icon">🙏</span>
+            <h1>Intentions de prière</h1>
+            <div class="subtitle">Partagez votre prière</div>
+            <div class="separator"></div>
+            <div class="badge"><i class="fas fa-heart" style="margin-right: 4px;"></i> Communauté de prière</div>
+        </div>
+
+        <div class="intro-text">
+            <i class="fas fa-feather-alt"></i> Écrivez une intention, une prière ou un message d'espérance. 
+            Chaque prière est une lumière qui éclaire nos cœurs.
+        </div>
+
+        <div class="intention-example">
+            <i class="fas fa-lightbulb"></i> <strong>Exemple :</strong> 
+            "Seigneur, je te confie cette personne qui souffre. Donne-lui la paix et la force de traverser cette épreuve. Amen."
+        </div>
+
+        <form id="priereForm">
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Votre prénom ou pseudo</label>
+                <input type="text" id="nom" placeholder="Ex: Marie, Paul, Un ami..." required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Votre email (optionnel)</label>
+                <input type="email" id="email" placeholder="Ex: marie@email.com">
+                <div class="hint">Pour recevoir une réponse ou un remerciement</div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-pray"></i> Votre intention de prière</label>
+                <textarea id="intention" placeholder="Écrivez ici votre prière, votre intention ou votre message..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Envoyer ma prière
+            </button>
+        </form>
+
+        <div id="messageBox" class="message-box"></div>
+
+        <div class="footer">
+            <div class="hearts">✧ ✦ ✧</div>
+            Chaque prière compte · Merci pour votre foi
+        </div>
+    </div>
+
+    <script>
+        // 🔴 REMPLACEZ PAR L'URL DE VOTRE SCRIPT APPS SCRIPT (uniquement pour les intentions)
+        const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbywx7T5nWQ8nepqGPcDF8cekWwh1e9zb0QDXjQgRHV4gU4CTQIe88bMTWqV_pvR3oJS/exec";
+
+        const form = document.getElementById('priereForm');
+        const messageBox = document.getElementById('messageBox');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nom = document.getElementById('nom').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const intention = document.getElementById('intention').value.trim();
+
+            if (!nom || !intention) {
+                showMessage("Veuillez indiquer votre nom et votre intention de prière.", "error");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+
+            try {
+                await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'priere',
+                        nom: nom,
+                        email: email || "Non renseigné",
+                        intention: intention,
+                        date: new Date().toISOString()
+                    })
+                });
+
+                showMessage("🙏 Votre intention a été déposée. Merci pour votre prière !", "success");
+                form.reset();
+                
+            } catch(error) {
+                console.error("Erreur:", error);
+                showMessage("❌ Une erreur s'est produite. Veuillez réessayer.", "error");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer ma prière';
+            }
+        });
+
+        function showMessage(msg, type) {
+            messageBox.textContent = msg;
+            messageBox.className = 'message-box ' + type;
+            messageBox.style.display = 'block';
+            clearTimeout(window.messageTimeout);
+            window.messageTimeout = setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 8000);
+        }
+    </script>
+</body>
+</html>
