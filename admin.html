@@ -180,17 +180,17 @@
                 for(let i = 0; i < data.length; i++) {
                     const ligne = data[i];
                     if (Array.isArray(ligne) && ligne.length >= 4) {
-                        // Format: [Date, Nom, Email, Intention, Type, ...]
+                        // Format: [Date, Nom, Telephone, Intention, Type, ...]
                         const date = ligne[0];
                         const nom = ligne[1];
-                        const email = ligne[2];
+                        const telephone = ligne[2];
                         const intention = ligne[3];
                         const type = ligne[4] || '';
                         if (nom && nom !== "" && nom !== "Nom" && nom !== "NOM") {
                             intentions.push({
                                 date: date,
                                 nom: nom,
-                                email: email,
+                                telephone: telephone,
                                 intention: intention,
                                 type: type
                             });
@@ -221,7 +221,7 @@
         let html = `<table><thead><tr>
             <th>Date</th>
             <th>Nom</th>
-            <th>Email</th>
+            <th>Télephone</th>
             <th>Intention</th>
             <th>Type</th>
         </tr></thead><tbody>`;
@@ -231,7 +231,7 @@
             html += `<tr>
                 <td style="font-size:0.7rem; color:#888;">${dateFormatee}</td>
                 <td><strong>${escapeHtml(p.nom)}</strong></td>
-                <td style="font-size:0.75rem; color:#aaa;">${escapeHtml(p.email) || '—'}</td>
+                <td style="font-size:0.75rem; color:#aaa;">${escapeHtml(p.telephone) || '—'}</td>
                 <td class="intention-text">${escapeHtml(p.intention)}</td>
                 <td><span class="badge-priere"><i class="fas fa-pray"></i> Prière</span></td>
             </tr>`;
