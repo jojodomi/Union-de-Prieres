@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>🙏 Admin - Intentions de prière</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -11,7 +11,7 @@
         body {
             background: #0f0f1a;
             font-family: 'Inter', sans-serif;
-            padding: 24px;
+            padding: 16px;
             color: #e0e0e0;
             min-height: 100vh;
         }
@@ -21,124 +21,140 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 32px;
+            gap: 12px;
+            margin-bottom: 24px;
             border-bottom: 1px solid #2a2a3a;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
         }
         .header h1 {
-            font-size: 1.8rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #f5d371;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
-        .header h1 i { font-size: 2rem; }
+        .header h1 i { font-size: 1.5rem; }
         .header .stats {
             background: #1a1a2e;
-            padding: 8px 20px;
+            padding: 6px 16px;
             border-radius: 40px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #aaa;
         }
         .header .stats span { color: #f5d371; font-weight: 700; }
         .btn-refresh {
             background: #2a2a3a;
             border: none;
-            padding: 10px 24px;
+            padding: 8px 18px;
             border-radius: 40px;
             color: white;
             font-weight: 500;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: 0.2s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             font-family: 'Inter', sans-serif;
         }
         .btn-refresh:hover { background: #3a3a4a; }
         .btn-refresh:active { transform: scale(0.97); }
+
+        /* ===== TABLEAU RESPONSIVE ===== */
         .table-wrapper {
             background: #1a1a2e;
-            border-radius: 24px;
+            border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            overflow-x: auto;  /* ← Scroll horizontal si nécessaire */
+            -webkit-overflow-scrolling: touch;
         }
         table {
             width: 100%;
+            min-width: 600px;   /* Largeur minimale pour garder les colonnes lisibles */
             border-collapse: collapse;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
         th, td {
-            padding: 14px 18px;
+            padding: 12px 14px;
             text-align: left;
             border-bottom: 1px solid #2a2a3a;
+            white-space: nowrap;  /* Évite le retour à la ligne dans les colonnes courtes */
         }
         th {
             background: #12121f;
             color: #f5d371;
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         td {
             vertical-align: top;
+            white-space: normal;  /* Permet le retour à la ligne pour l'intention */
+            word-wrap: break-word;
+            max-width: 200px;     /* Limite la largeur de la colonne intention */
         }
         tr:hover { background: #22223a; }
         .intention-text {
-            max-width: 300px;
+            max-width: 200px;
             word-wrap: break-word;
-            line-height: 1.5;
+            line-height: 1.4;
             color: #ccc;
+            white-space: normal;
         }
         .badge-priere {
             display: inline-block;
             background: rgba(245, 211, 113, 0.15);
             color: #f5d371;
-            padding: 2px 12px;
+            padding: 2px 10px;
             border-radius: 40px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
         }
         .empty {
             text-align: center;
-            padding: 60px 20px;
+            padding: 40px 20px;
             color: #666;
         }
         .empty i {
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: #333;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             display: block;
         }
         .loading {
             text-align: center;
-            padding: 60px 20px;
+            padding: 40px 20px;
             color: #666;
         }
         .loading i { color: #f5d371; }
         .footer {
-            margin-top: 24px;
+            margin-top: 20px;
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #444;
         }
-        @media (max-width: 700px) {
-            th, td { padding: 10px 12px; font-size: 0.75rem; }
-            .intention-text { max-width: 150px; }
-            .header { flex-direction: column; align-items: stretch; }
+
+        /* Ajustements pour très petits écrans */
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .header h1 { font-size: 1.1rem; }
+            .header .stats { font-size: 0.7rem; padding: 4px 12px; }
+            .btn-refresh { font-size: 0.7rem; padding: 6px 12px; }
+            th, td { padding: 8px 10px; font-size: 0.7rem; }
+            .intention-text { max-width: 120px; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h1><i class="fas fa-pray"></i> Intentions de prière</h1>
-        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-            <div class="stats"><i class="fas fa-feather-alt"></i> <span id="countIntention">0</span> intentions reçues</div>
-            <button class="btn-refresh" id="refreshBtn"><i class="fas fa-sync-alt"></i> Synchroniser</button>
+        <h1><i class="fas fa-pray"></i> Intentions</h1>
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div class="stats"><i class="fas fa-feather-alt"></i> <span id="countIntention">0</span></div>
+            <button class="btn-refresh" id="refreshBtn"><i class="fas fa-sync-alt"></i> Sync</button>
         </div>
     </div>
 
@@ -147,11 +163,11 @@
             <div class="loading"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
         </div>
     </div>
-    <div class="footer">🙏 Chaque prière est précieuse · Admin intentions de prière</div>
+    <div class="footer">🙏 Chaque prière est précieuse · Admin</div>
 </div>
 
 <script>
-    // 🔴 REMPLACEZ PAR L'URL DE VOTRE SCRIPT APPS SCRIPT (doGet)
+    // 🔴 REMPLACEZ PAR VOTRE URL
     const SHEET_DATA_URL = "https://script.google.com/macros/s/AKfycbyGp86E5cffCEdVXujVD0ghDazNKlh0xJydbY_IBSCHKQ3DqrSYiytgjMCnXn_IeQNT/exec";
 
     let intentions = [];
@@ -180,7 +196,6 @@
                 for(let i = 0; i < data.length; i++) {
                     const ligne = data[i];
                     if (Array.isArray(ligne) && ligne.length >= 4) {
-                        // Format: [Date, Nom, Telephone, Intention, Type, ...]
                         const date = ligne[0];
                         const nom = ligne[1];
                         const telephone = ligne[2];
@@ -199,29 +214,27 @@
                 }
             }
             
-            // Filtrer uniquement les intentions de prière (type "Prière" ou si type non défini mais contient une intention)
             const prieres = intentions.filter(i => i.type === 'Prière' || (i.intention && i.intention.trim() !== ''));
-            
             afficherTableau(prieres);
             document.getElementById('countIntention').textContent = prieres.length;
             
         } catch(error) {
             console.error(error);
-            container.innerHTML = `<div class="empty"><i class="fas fa-exclamation-circle"></i> Erreur de chargement.<br><span style="font-size:0.8rem;">Vérifiez l'URL du script Apps Script.</span></div>`;
+            container.innerHTML = `<div class="empty"><i class="fas fa-exclamation-circle"></i> Erreur de chargement.<br><span style="font-size:0.8rem;">Vérifiez l'URL du script.</span></div>`;
         }
     }
 
     function afficherTableau(prieres) {
         const container = document.getElementById('tableContainer');
         if (prieres.length === 0) {
-            container.innerHTML = `<div class="empty"><i class="fas fa-feather-alt"></i>Aucune intention de prière pour le moment.<br><span style="font-size:0.8rem;">Les intentions apparaîtront ici dès qu'elles seront déposées.</span></div>`;
+            container.innerHTML = `<div class="empty"><i class="fas fa-feather-alt"></i>Aucune intention reçue.</div>`;
             return;
         }
         
         let html = `<table><thead><tr>
             <th>Date</th>
             <th>Nom</th>
-            <th>Télephone</th>
+            <th>Tél.</th>
             <th>Intention</th>
             <th>Type</th>
         </tr></thead><tbody>`;
@@ -229,9 +242,9 @@
         prieres.forEach(p => {
             const dateFormatee = p.date ? new Date(p.date).toLocaleString() : 'N/A';
             html += `<tr>
-                <td style="font-size:0.7rem; color:#888;">${dateFormatee}</td>
+                <td style="font-size:0.65rem; color:#888; white-space:nowrap;">${dateFormatee}</td>
                 <td><strong>${escapeHtml(p.nom)}</strong></td>
-                <td style="font-size:0.75rem; color:#aaa;">${escapeHtml(p.telephone) || '—'}</td>
+                <td style="font-size:0.7rem; color:#aaa;">${escapeHtml(p.telephone) || '—'}</td>
                 <td class="intention-text">${escapeHtml(p.intention)}</td>
                 <td><span class="badge-priere"><i class="fas fa-pray"></i> Prière</span></td>
             </tr>`;
