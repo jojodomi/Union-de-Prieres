@@ -146,7 +146,6 @@
             color: rgba(255, 255, 255, 0.3);
             margin-top: 4px;
         }
-        /* Indicateur facultatif discret */
         .optional-badge {
             font-size: 0.6rem;
             color: rgba(255, 255, 255, 0.25);
@@ -185,8 +184,12 @@
             transform: translateY(-2px);
             box-shadow: 0 12px 30px rgba(245, 211, 113, 0.3);
         }
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-        /* ========== MESSAGE DE CONFIRMATION GRAND ET ANIMÉ ========== */
         .message-box {
             margin: 20px 0 0;
             padding: 18px 20px;
@@ -218,7 +221,6 @@
             color: #ef9a9a;
             border: 1px solid rgba(198, 40, 40, 0.3);
         }
-        /* Animation de sortie (fondu vers le bas) */
         .message-box.hide {
             opacity: 0;
             transform: translateY(30px) scale(0.9);
@@ -286,29 +288,29 @@
         </div>
 
         <div class="intro-text">
-            <i class="fas fa-feather-alt"></i> Déposez ici votre intention de prière. Ensemble nous resterons en union de prière. 
+            <i class="fas fa-feather-alt"></i> Déposez ici votre intention de prière. Ensemble nous resterons en union de prière.
             Que le Seigneur nous fasse miséricorde et nous exauce.
         </div>
-<div class="intention-example">
-           <i class="fas fa-lightbulb"></i> <strong>Deutéronome 26,7 :</strong> 
-            « Nous avons crié vers le Seigneur, le Dieu de nos pères. Il a entendu notre voix, il a vu que nous étions dans la misère, la peine et l’oppression. »
+        <div class="intention-example">
+           <i class="fas fa-lightbulb"></i> <strong>Deutéronome 26,7 :</strong>
+            « Nous avons crié vers le Seigneur, le Dieu de nos pères. Il a entendu notre voix, il a vu que nous étions dans la misère, la peine et l'oppression. »
         </div>
 
         <form id="priereForm">
             <div class="form-group">
                 <label><i class="fas fa-user"></i> Votre prénom ou pseudo <span class="optional-badge">facultatif</span></label>
-                <input type="text" id="nom" placeholder="Ex: Marie, Paul,...">
+                <input type="text" id="nom" name="nom" placeholder="Ex: Marie, Paul,...">
             </div>
 
             <div class="form-group">
-    <label><i class="fas fa-phone"></i> Votre numéro WhatsApp <span class="optional-badge">facultatif</span></label>
-    <input type="tel" id="telephone" placeholder="Ex: +226 70 12 34 56">
-    <div class="hint">Pour de plus amples informations sur le sujet de prière</div>
+                <label><i class="fas fa-phone"></i> Votre numéro WhatsApp <span class="optional-badge">facultatif</span></label>
+                <input type="tel" id="telephone" name="telephone" placeholder="Ex: +226 70 12 34 56">
+                <div class="hint">Pour de plus amples informations sur le sujet de prière</div>
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-pray"></i> Votre intention de prière <span style="color:#f5d371;">*</span></label>
-                <textarea id="intention" placeholder="Écrivez ici votre prière, votre intention ou votre message..." required></textarea>
+                <textarea id="intention" name="intention" placeholder="Écrivez ici votre prière, votre intention ou votre message..." required></textarea>
             </div>
 
             <button type="submit" class="btn-submit" id="submitBtn">
@@ -325,70 +327,62 @@
     </div>
 
     <script>
-   const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyGp86E5cffCEdVXujVD0ghDazNKlh0xJydbY_IBSCHKQ3DqrSYiytgjMCnXn_IeQNT/exec";
+    const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyGp86E5cffCEdVXujVD0ghDazNKlh0xJydbY_IBSCHKQ3DqrSYiytgjMCnXn_IeQNT/exec";
 
-const form = document.getElementById('priereForm');
-const messageBox = document.getElementById('messageBox');
-const submitBtn = document.getElementById('submitBtn');
-let hideTimeout = null;
+    const form = document.getElementById('priereForm');
+    const messageBox = document.getElementById('messageBox');
+    const submitBtn = document.getElementById('submitBtn');
+    let hideTimeout = null;
 
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const intention = document.getElementById('intention').value.trim();
-    if (!intention) {
-        showMessage("❌ Veuillez écrire votre intention de prière.", "error");
-        return;
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const intention = document.getElementById('intention').value.trim();
+        if (!intention) {
+            showMessage("❌ Veuillez écrire votre intention de prière.", "error");
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+
+        try {
+            const formData = new FormData(form);
+            formData.append('date', new Date().toISOString());
+
+            await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            });
+
+            showMessage("🙏 Votre intention a été déposée. Que le Seigneur nous exauce !", "success");
+            form.reset();
+
+        } catch(error) {
+            console.error("Erreur:", error);
+            showMessage("❌ Une erreur s'est produite. Veuillez réessayer.", "error");
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer ma prière';
+        }
+    });
+
+    function showMessage(msg, type) {
+        if (hideTimeout) clearTimeout(hideTimeout);
+        messageBox.className = 'message-box';
+        void messageBox.offsetWidth;
+        messageBox.textContent = msg;
+        messageBox.classList.add(type);
+        messageBox.classList.add('show');
+        hideTimeout = setTimeout(() => {
+            messageBox.classList.remove('show');
+            messageBox.classList.add('hide');
+            setTimeout(() => {
+                messageBox.className = 'message-box';
+            }, 600);
+        }, 8000);
     }
-
-    let nom = document.getElementById('nom').value.trim();
-    if (!nom) nom = "Anonyme";
-
-    const telephone = document.getElementById('telephone').value.trim();
-
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-
-    try {
-        // ✅ On utilise FormData à partir du formulaire (comme dans l'app des messes)
-        const formData = new FormData(form);
-        // On ajoute manuellement la date (si besoin)
-        formData.append('date', new Date().toISOString());
-
-        await fetch(WEBHOOK_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: formData  // Le navigateur envoie en multipart/form-data
-        });
-
-        showMessage("🙏 Votre intention a été déposée. Que le Seigneur nous exauce !", "success");
-        form.reset();
-        
-    } catch(error) {
-        console.error("Erreur:", error);
-        showMessage("❌ Une erreur s'est produite. Veuillez réessayer.", "error");
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer mon intention';
-    }
-});
-
-function showMessage(msg, type) {
-    if (hideTimeout) clearTimeout(hideTimeout);
-    messageBox.className = 'message-box';
-    void messageBox.offsetWidth;
-    messageBox.textContent = msg;
-    messageBox.classList.add(type);
-    messageBox.classList.add('show');
-    hideTimeout = setTimeout(() => {
-        messageBox.classList.remove('show');
-        messageBox.classList.add('hide');
-        setTimeout(() => {
-            messageBox.className = 'message-box';
-        }, 600);
-    }, 8000);
-}
-        
     </script>
 </body>
 </html>
