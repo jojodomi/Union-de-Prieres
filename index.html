@@ -325,76 +325,80 @@
     </div>
 
     <script>
-        // 🔴 REMPLACEZ CETTE URL PAR VOTRE LIEN DE SCRIPT APPS SCRIPT
-        const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyGp86E5cffCEdVXujVD0ghDazNKlh0xJydbY_IBSCHKQ3DqrSYiytgjMCnXn_IeQNT/exec";
+      // 🔴 REMPLACEZ CETTE URL PAR VOTRE LIEN DE SCRIPT APPS SCRIPT
+const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyGp86E5cffCEdVXujVD0ghDazNKlh0xJydbY_IBSCHKQ3DqrSYiytgjMCnXn_IeQNT/exec";
 
-        const form = document.getElementById('priereForm');
-        const messageBox = document.getElementById('messageBox');
-        const submitBtn = document.getElementById('submitBtn');
-        let hideTimeout = null;
+const form = document.getElementById('priereForm');
+const messageBox = document.getElementById('messageBox');
+const submitBtn = document.getElementById('submitBtn');
+let hideTimeout = null;
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Seule l'intention est obligatoire
-            const intention = document.getElementById('intention').value.trim();
-            if (!intention) {
-                showMessage("❌ Veuillez écrire votre intention de prière.", "error");
-                return;
-            }
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Seule l'intention est obligatoire
+    const intention = document.getElementById('intention').value.trim();
+    if (!intention) {
+        showMessage("❌ Veuillez écrire votre intention de prière.", "error");
+        return;
+    }
 
-            // Le nom est optionnel : s'il est vide, on met "Anonyme"
-            let nom = document.getElementById('nom').value.trim();
-            if (!nom) nom = "Anonyme";
+    let nom = document.getElementById('nom').value.trim();
+    if (!nom) nom = "Anonyme";
 
-            const telephone = document.getElementById('telephone').value.trim();
+    const telephone = document.getElementById('telephone').value.trim();
 
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
 
-            try {
-                await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        type: 'priere',
-                        nom: nom,
-                        telephone: telephone || "Non renseigné",
-                        intention: intention,
-                        date: new Date().toISOString()
-                    })
-                });
+    try {
+        // Créer un formulaire invisible pour envoyer les données
+        const formData = new FormData();
+        formData.append('nom', nom);
+        formData.append('telephone', telephone || "Non renseigné");
+        formData.append('intention', intention);
+        formData.append('date', new Date().toISOString());
 
-                showMessage("🙏 Votre intention a été déposée. Que le Seigneur nous exauce !", "success");
-                form.reset();
-                
-            } catch(error) {
-                console.error("Erreur:", error);
-                showMessage("❌ Une erreur s'est produite. Veuillez réessayer.", "error");
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer mon intention';
-            }
+        // Envoyer avec fetch (sans mode: 'no-cors' pour que le navigateur envoie tout)
+        const response = await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            body: formData  // Pas de Content-Type : le navigateur le gère
         });
 
-        function showMessage(msg, type) {
-            if (hideTimeout) clearTimeout(hideTimeout);
-            
+        // Comme on est en POST normal, on peut lire la réponse (optionnel)
+        const result = await response.json();
+        console.log("Réponse du serveur :", result);
+
+        showMessage("🙏 Votre intention a été déposée. Que le Seigneur nous exauce !", "success");
+        form.reset();
+
+    } catch(error) {
+        console.error("Erreur:", error);
+        showMessage("❌ Une erreur s'est produite. Veuillez réessayer.", "error");
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer mon intention';
+    }
+});
+
+function showMessage(msg, type) {
+    if (hideTimeout) clearTimeout(hideTimeout);
+    
+    messageBox.className = 'message-box';
+    void messageBox.offsetWidth;
+    
+    messageBox.textContent = msg;
+    messageBox.classList.add(type);
+    messageBox.classList.add('show');
+    
+    hideTimeout = setTimeout(() => {
+        messageBox.classList.remove('show');
+        messageBox.classList.add('hide');
+        setTimeout(() => {
             messageBox.className = 'message-box';
-            void messageBox.offsetWidth; // reflow
-            
-            messageBox.textContent = msg;
-            messageBox.classList.add(type);
-            messageBox.classList.add('show');
-            
-            hideTimeout = setTimeout(() => {
-                messageBox.classList.remove('show');
-                messageBox.classList.add('hide');
-                setTimeout(() => {
-                    messageBox.className = 'message-box';
-                }, 600);
-            }, 8000);
+        }, 600);
+    }, 8000);
+}
         }
     </script>
 </body>
