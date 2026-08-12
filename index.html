@@ -325,8 +325,7 @@
     </div>
 
     <script>
-    // 🔴 REMPLACEZ CETTE URL PAR VOTRE LIEN DE SCRIPT APPS SCRIPT
-const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyGp86E5cffCEdVXujVD0ghDazNKlh0xJydbY_IBSCHKQ3DqrSYiytgjMCnXn_IeQNT/exec";
+   const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyGp86E5cffCEdVXujVD0ghDazNKlh0xJydbY_IBSCHKQ3DqrSYiytgjMCnXn_IeQNT/exec";
 
 const form = document.getElementById('priereForm');
 const messageBox = document.getElementById('messageBox');
@@ -336,7 +335,6 @@ let hideTimeout = null;
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Seule l'intention est obligatoire
     const intention = document.getElementById('intention').value.trim();
     if (!intention) {
         showMessage("❌ Veuillez écrire votre intention de prière.", "error");
@@ -352,17 +350,15 @@ form.addEventListener('submit', async (e) => {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
 
     try {
-        // ✅ Utiliser URLSearchParams (comme dans votre code qui fonctionne)
-        const formData = new URLSearchParams();
-        formData.append('nom', nom);
-        formData.append('telephone', telephone || "Non renseigné");
-        formData.append('intention', intention);
+        // ✅ On utilise FormData à partir du formulaire (comme dans l'app des messes)
+        const formData = new FormData(form);
+        // On ajoute manuellement la date (si besoin)
         formData.append('date', new Date().toISOString());
 
         await fetch(WEBHOOK_URL, {
             method: 'POST',
             mode: 'no-cors',
-            body: formData  // Pas de Content-Type : le navigateur le gère automatiquement
+            body: formData  // Le navigateur envoie en multipart/form-data
         });
 
         showMessage("🙏 Votre intention a été déposée. Que le Seigneur nous exauce !", "success");
@@ -379,14 +375,11 @@ form.addEventListener('submit', async (e) => {
 
 function showMessage(msg, type) {
     if (hideTimeout) clearTimeout(hideTimeout);
-    
     messageBox.className = 'message-box';
     void messageBox.offsetWidth;
-    
     messageBox.textContent = msg;
     messageBox.classList.add(type);
     messageBox.classList.add('show');
-    
     hideTimeout = setTimeout(() => {
         messageBox.classList.remove('show');
         messageBox.classList.add('hide');
