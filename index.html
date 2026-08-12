@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>🙏 Intentions de prière</title>
+    <title>🙏 Union de prière</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -279,8 +279,8 @@
     <div class="container">
         <div class="header">
             <span class="icon">🙏</span>
-            <h1>Intentions de prière</h1>
-            <div class="subtitle">Partagez votre intention de prière</div>
+            <h1>Union de prière</h1>
+            <div class="subtitle">Les enfants de la Divine Miséricorde</div>
             <div class="separator"></div>
             <div class="badge"><i class="fas fa-heart" style="margin-right: 4px;"></i> Communauté de prière</div>
         </div>
@@ -289,18 +289,21 @@
             <i class="fas fa-feather-alt"></i> Déposez ici votre intention de prière. Ensemble nous resterons en union de prière. 
             Que le Seigneur nous fasse miséricorde et nous exauce.
         </div>
-
+<div class="intention-example">
+           <i class="fas fa-lightbulb"></i> <strong>Deutéronome 26,7 :</strong> 
+            « Nous avons crié vers le Seigneur, le Dieu de nos pères. Il a entendu notre voix, il a vu que nous étions dans la misère, la peine et l’oppression. »
+        </div>
 
         <form id="priereForm">
             <div class="form-group">
                 <label><i class="fas fa-user"></i> Votre prénom ou pseudo <span class="optional-badge">facultatif</span></label>
-                <input type="text" id="nom" placeholder="Ex: Marie, Paul, Un ami...">
+                <input type="text" id="nom" placeholder="Ex: Marie, Paul,...">
             </div>
 
             <div class="form-group">
-                <label><i class="fas fa-envelope"></i> Votre email <span class="optional-badge">facultatif</span></label>
-                <input type="email" id="email" placeholder="Ex: marie@email.com">
-                <div class="hint">Pour recevoir une réponse ou un remerciement</div>
+    <label><i class="fas fa-phone"></i> Votre numéro WhatsApp <span class="optional-badge">facultatif</span></label>
+    <input type="tel" id="telephone" placeholder="Ex: +226 70 12 34 56">
+    <div class="hint">Pour de plus amples informations sur le sujet de prière</div>
             </div>
 
             <div class="form-group">
@@ -344,7 +347,7 @@
             let nom = document.getElementById('nom').value.trim();
             if (!nom) nom = "Anonyme";
 
-            const email = document.getElementById('email').value.trim();
+            const telephone = document.getElementById('telephone').value.trim();
 
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
@@ -357,7 +360,7 @@
                     body: JSON.stringify({
                         type: 'priere',
                         nom: nom,
-                        email: email || "Non renseigné",
+                        telephone: telephone || "Non renseigné",
                         intention: intention,
                         date: new Date().toISOString()
                     })
